@@ -1,5 +1,5 @@
 /// Simple dialogue system with typewriter effect.
-/// @param {real} _font Asset font.
+/// @param {Asset.GMFont} _font Asset font.
 /// @param {real} _write_speed Speed per gamespeed fps.
 /// @param {real} _width Maximum width in pixels before adding newline character.
 function GMDialogue(_font, _write_speed, _wrap = undefined) constructor {
