@@ -2,7 +2,7 @@
 /// @param {Asset.GMFont} _font Asset font.
 /// @param {real} _write_speed Speed per gamespeed fps.
 /// @param {real} _width Maximum width in pixels before adding newline character.
-function GMDialogue(_font, _write_speed, _wrap = undefined) constructor {
+function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 	
 	//Initialize variables.
 	__queue_list      = [];
@@ -23,7 +23,7 @@ function GMDialogue(_font, _write_speed, _wrap = undefined) constructor {
 	add = function(_string) {
 		var _string_push = _string;
 		//If not undefined then wrap string.
-		if !is_undefined(__string_wrap) {
+		if __string_wrap > 0 {
 			draw_set_font(__asset_font);
 			_string_push = __string_wrapped(_string, __string_wrap);	
 		}
