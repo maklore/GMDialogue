@@ -9,7 +9,9 @@
     "name":"Default",
   },
   "defaultScriptType":1,
-  "Folders":[],
+  "Folders":[
+    {"$GMFolder":"","%Name":"GMDialogue","folderPath":"folders/GMDialogue.yy","name":"GMDialogue","resourceType":"GMFolder","resourceVersion":"2.0",},
+  ],
   "ForcedPrefabProjectReferences":[
     {"link":"io.gamemaker.sdfshaders-1.0.0","name":"io.gamemaker.sdfshaders-1.0.0","path":"io.gamemaker.sdfshaders-1.0.0.yyp",},
   ],
@@ -21,15 +23,15 @@
   },
   "name":"GMDialogue",
   "resources":[
-    {"id":{"name":"font_arial","path":"fonts/font_arial/font_arial.yy",},},
+    {"id":{"name":"fntArial","path":"fonts/fntArial/fntArial.yy",},},
     {"id":{"name":"objDialogue","path":"objects/objDialogue/objDialogue.yy",},},
-    {"id":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"id":{"name":"rmOne","path":"rooms/rmOne/rmOne.yy",},},
     {"id":{"name":"GMDialogue","path":"scripts/GMDialogue/GMDialogue.yy",},},
   ],
   "resourceType":"GMProject",
   "resourceVersion":"2.0",
   "RoomOrderNodes":[
-    {"roomId":{"name":"Room1","path":"rooms/Room1/Room1.yy",},},
+    {"roomId":{"name":"rmOne","path":"rooms/rmOne/rmOne.yy",},},
   ],
   "templateType":"game",
   "TextureGroups":[

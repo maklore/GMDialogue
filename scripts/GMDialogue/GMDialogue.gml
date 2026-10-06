@@ -133,5 +133,4 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 		//Return the wrapped string.
 		return _string_wrapped;
 	}
-
 }

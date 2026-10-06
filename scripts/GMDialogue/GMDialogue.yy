@@ -6,7 +6,7 @@
   "name":"GMDialogue",
   "parent":{
     "name":"GMDialogue",
-    "path":"GMDialogue.yyp",
+    "path":"folders/GMDialogue.yy",
   },
   "resourceType":"GMScript",
   "resourceVersion":"2.0",
