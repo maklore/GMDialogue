@@ -1,2 +1,2 @@
-diag.draw(100, 100);
-diag2.draw(100, 400);
+dlg.draw(100, 100);
+dlg2.draw(100, 400);

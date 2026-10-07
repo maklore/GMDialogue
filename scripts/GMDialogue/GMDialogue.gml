@@ -6,12 +6,14 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 	
 	//Initialize variables.
 	__queue_list      = [];
+	__dimensions_list = [];
 	__asset_font      = _font;
 	__string_current  = "";
 	__string_draw     = "";
 	__string_length   = 0;
 	__string_position = 0;
 	__string_wrap     = _wrap;
+	__dimension_current = undefined;
 	__write_speed     = _write_speed * (1 / gamespeed_fps); //Write speed * framespeed.
 	__write_increment = 0;
 	__write_complete  = true;
@@ -29,6 +31,10 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 		}
 		//Add string to end of the array.
 		array_push(__queue_list, _string_push);
+		array_push(__dimensions_list, {
+			width  : string_width(_string_push),
+			height : string_height(_string_push)
+		});
 	}
 	
 	/**
@@ -41,10 +47,12 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 			__string_position = __string_length;
 			__string_draw = __string_current;
 			__write_complete = true;
+			__dimension_current = undefined;
 			exit;
 		}
-		//Get the string from the start of the array and remove it from the array.
+		//Get the string and dimensions from the start of the array and remove it from the array.
 		__string_current = array_shift(__queue_list); //Returns undefined if empty.
+		__dimension_current = array_shift(__dimensions_list); //Remove dimensions
 		//Reset string position, and draw.
 		__string_position = 0;
 		__string_draw = "";
@@ -80,7 +88,13 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 			}
 		}
 		
+		//Set the font to draw.
 		draw_set_font(__asset_font);
+		
+		//Draw border behind the string.
+		if !is_undefined(__dimension_current) {
+			draw_rectangle_colour(_x, _y, _x + __dimension_current.width, _y + __dimension_current.height, c_gray, c_gray, c_gray, c_gray, false);
+		}
 		
 		//Draw the string from string draw at set coordinates.
 		draw_text(_x, _y, __string_draw);

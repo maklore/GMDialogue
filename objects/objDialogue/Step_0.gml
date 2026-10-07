@@ -1,4 +1,4 @@
 if keyboard_check_released(vk_space) {
-	diag.next();	
-	diag2.next();	
+	dlg.next();	
+	dlg2.next();	
 }
