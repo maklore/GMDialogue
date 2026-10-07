@@ -1,0 +1,12 @@
+/**/
+#macro GMDIALOGUE_HALIGN                      fa_center
+/**/
+#macro GMDIALOGUE_BACKGROUND_SPRITE           sprBackground
+/**/
+#macro GMDIALOGUE_BACKGROUND_PADDING          50
+/**/
+#macro GMDIALOGUE_BACKGROUND_WIDTH_MIN        100
+/**/
+#macro GMDIALOGUE_BACKGROUND_HEIGHT_MIN       100
+/**/
+#macro GMDIALOGUE_BACKGROUND_ADJUSTMENT_SPEED 1/60
