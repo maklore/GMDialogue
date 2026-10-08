@@ -32,7 +32,7 @@
     "left":4,
     "resourceType":"GMNineSliceData",
     "resourceVersion":"2.0",
-    "right":5,
+    "right":4,
     "tileMode":[
       1,
       1,
@@ -42,7 +42,7 @@
     ],
     "top":4,
   },
-  "origin":4,
+  "origin":0,
   "parent":{
     "name":"GMDialogue",
     "path":"GMDialogue.yyp",
@@ -94,8 +94,8 @@
     ],
     "visibleRange":null,
     "volume":1.0,
-    "xorigin":32,
-    "yorigin":32,
+    "xorigin":0,
+    "yorigin":0,
   },
   "swatchColours":null,
   "swfPrecision":0.5,

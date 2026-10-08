@@ -1,14 +1,19 @@
-/**/
+/* FONT ALIGNMENT HORIZONTALLY */
 #macro GMDIALOGUE_HALIGN                      fa_center
-/**/
-#macro GMDIALOGUE_BACKGROUND_SPRITE           sprBackground
-/**/
-#macro GMDIALOGUE_BACKGROUND_PADDING          25
-/**/
-#macro GMDIALOGUE_BACKGROUND_WIDTH_MIN        100
-/**/
-#macro GMDIALOGUE_BACKGROUND_HEIGHT_MIN       100
-/**/
+
+/* SPRITE RENDERED BEHIND TEXT, SUGGEST USING NINE-SLICE */
+#macro GMDIALOGUE_BACKGROUND_SPRITE           sprGMDialogueBackground //Change to your sprite asset.
+
+/* DISTANCE FROM TEXT TO EDGE OF DRAWN SPRITE */
+#macro GMDIALOGUE_BACKGROUND_PADDING          10
+
+/* MINIMUM WIDTH OF SPRITE TO DRAW */
+#macro GMDIALOGUE_BACKGROUND_WIDTH_MIN        80
+
+/* MINIMUM HEIGHT OF SPRITE TO DRAW */
+#macro GMDIALOGUE_BACKGROUND_HEIGHT_MIN       32
+
+/* SPEED PER FRAME SHOULD ADJUST TO FIT TEXT*/
 #macro GMDIALOGUE_BACKGROUND_ADJUSTMENT_SPEED 1/60
 
 
@@ -26,10 +31,11 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 	__string_length     = 0;
 	__string_position   = 0;
 	__string_wrap       = _wrap;
+	__string_x          = 0;
 	__background_list   = [];
 	__background_current = undefined;
 	__background_padding = GMDIALOGUE_BACKGROUND_PADDING;
-	__background_halign  = 0;
+	__background_halign  = undefined;
 	__background_x       = undefined;
 	__background_y       = undefined;
 	__background_width   = undefined;
@@ -45,9 +51,9 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 	*/
 	add = function(_string) {
 		var _string_push = _string;
+		draw_set_font(__asset_font);
 		//If not undefined then wrap string.
 		if __string_wrap > 0 {
-			draw_set_font(__asset_font);
 			_string_push = __string_wrapped(_string, __string_wrap);	
 		}
 		//Add string to end of the array.
@@ -93,8 +99,11 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 			__string_length = string_length(__string_current)
 		}
 		
+		//Reset variables before drawing next string.
 		__write_complete = false;
 		__background_speed = 0;
+		__background_halign = undefined;
+		__string_x = 0;
 	}
 	
 	/**
@@ -107,12 +116,17 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 		//Exit the method if current string is undefined.
 		if is_undefined(__string_current) { exit; }
 		
+		//Draw setting.
+		draw_set_font(__asset_font);
+		draw_set_halign(GMDIALOGUE_HALIGN);
+		draw_set_valign(fa_top);
+		
 		//Initialize position, width, and height.
-		__background_x ??= _x;
-		__background_y ??= _y;
+		__background_x      ??= _x;
+		__background_y      ??= _y;
 		__background_width  ??= GMDIALOGUE_HALIGN == fa_center ? 0 : GMDIALOGUE_BACKGROUND_WIDTH_MIN;
 		__background_height ??= GMDIALOGUE_BACKGROUND_HEIGHT_MIN;
-		__background_halign = GMDIALOGUE_HALIGN == fa_center ? string_width(__string_current) * 0.5 : 0;
+		__background_halign ??= GMDIALOGUE_HALIGN == fa_center ? string_width(__string_current) * 0.5 : __background_current.width * 0.5;
 		
 		//If the string position is less than length increase write increment by set speed.
 		if __string_position < __string_length {
@@ -131,38 +145,58 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 			}
 		}
 		
-		//Draw setting.
-		draw_set_font(__asset_font);
-		draw_set_halign(GMDIALOGUE_HALIGN);
-		draw_set_valign(fa_top);
+
 		
 		//Draw background sprite behind the string.
 		if is_handle(GMDIALOGUE_BACKGROUND_SPRITE) and !is_undefined(__background_current) {
 			
-			if __background_speed < 1 { __background_speed += GMDIALOGUE_BACKGROUND_ADJUSTMENT_SPEED; }
+			var _background_padtwice = __background_padding * 2;
 			
-			if __background_current.width > GMDIALOGUE_BACKGROUND_WIDTH_MIN {
-				__background_x      = GMDIALOGUE_HALIGN == fa_center ? lerp(__background_x, _x - __background_halign - __background_padding, __background_speed) : _x - sprite_get_width(GMDIALOGUE_BACKGROUND_SPRITE) * 0.5 - __background_padding;
-				__background_width  = lerp(__background_width, __background_padding  * 2 + __background_current.width, __background_speed);
-			} else {
-				__background_x      = _x - __background_halign - __background_padding;
-				__background_width  = lerp(__background_width, __background_padding * 2 + GMDIALOGUE_BACKGROUND_WIDTH_MIN, __background_speed);
+			if __background_speed < 1 { 
+				__background_speed += GMDIALOGUE_BACKGROUND_ADJUSTMENT_SPEED; 
 			}
 			
-			if __background_current.height > GMDIALOGUE_BACKGROUND_HEIGHT_MIN {
-				__background_y      = GMDIALOGUE_HALIGN == fa_center ? lerp(__background_y, _y - __background_padding, __background_speed) : _y - __background_padding;
-				__background_height = GMDIALOGUE_HALIGN == fa_center ? lerp(__background_height, __background_padding * 2 + __background_current.height, __background_speed) : __background_padding * 2 + __background_current.height;
+			if __background_current.width > GMDIALOGUE_BACKGROUND_WIDTH_MIN {
+				if GMDIALOGUE_HALIGN == fa_center {
+					__background_x = lerp(__background_x, _x - __background_halign - __background_padding, __background_speed)
+					__string_x = 0;
+				} else {
+					__background_x = _x - __background_halign - __background_padding;
+					__string_x = __background_current.width * 0.5;
+				}
+				__background_width = lerp(__background_width, _background_padtwice + __background_current.width, __background_speed);
+				
 			} else {
-				__background_y      = _y - __background_padding;
-				__background_height = GMDIALOGUE_HALIGN == fa_center ? lerp(__background_height, __background_padding * 2 + GMDIALOGUE_BACKGROUND_HEIGHT_MIN, __background_speed) : __background_padding * 2 + GMDIALOGUE_BACKGROUND_HEIGHT_MIN;
-			} 
+				__background_x = _x - __background_halign - __background_padding;
+				__background_width = lerp(__background_width, _background_padtwice + GMDIALOGUE_BACKGROUND_WIDTH_MIN, __background_speed);
+				__string_x = GMDIALOGUE_BACKGROUND_WIDTH_MIN * 0.5;
+			}
+
+			if __background_current.height > GMDIALOGUE_BACKGROUND_HEIGHT_MIN {
+				if GMDIALOGUE_HALIGN == fa_center {
+					__background_y      = lerp(__background_y, _y - __background_padding, __background_speed);
+					__background_height = lerp(__background_height, _background_padtwice + __background_current.height, __background_speed);
+				} else {
+					__background_y      = _y - __background_padding;
+					__background_height = _background_padtwice + __background_current.height;
+				}
+				
+			} else {
+				__background_y = _y - __background_padding;
+				if GMDIALOGUE_HALIGN == fa_center or __background_height > GMDIALOGUE_BACKGROUND_HEIGHT_MIN {
+					__background_height = lerp(__background_height, _background_padtwice + GMDIALOGUE_BACKGROUND_HEIGHT_MIN, __background_speed);
+				} else {
+					__background_height = _background_padtwice + GMDIALOGUE_BACKGROUND_HEIGHT_MIN;
+				}
+			}
 			
 			draw_sprite_stretched(GMDIALOGUE_BACKGROUND_SPRITE, 0, __background_x, __background_y, __background_width, __background_height);
-			
+						
 		}
 		
 		//Draw the string from string draw at set coordinates.
-		draw_text(_x - (GMDIALOGUE_HALIGN != fa_center ? (is_handle(GMDIALOGUE_BACKGROUND_SPRITE) ? sprite_get_width(GMDIALOGUE_BACKGROUND_SPRITE) * 0.5  : string_width(__string_current) * 0.5) : 0), _y, __string_draw);
+		draw_text(_x - __string_x, _y, __string_draw);
+		//draw_circle(_x, _y, 100, true) //debug
 	}
 	
 	/// @ignore
