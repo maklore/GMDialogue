@@ -27,7 +27,6 @@
     {"id":{"name":"objDialogue","path":"objects/objDialogue/objDialogue.yy",},},
     {"id":{"name":"rmOne","path":"rooms/rmOne/rmOne.yy",},},
     {"id":{"name":"GMDialogue","path":"scripts/GMDialogue/GMDialogue.yy",},},
-    {"id":{"name":"GMDialogueConfig","path":"scripts/GMDialogueConfig/GMDialogueConfig.yy",},},
     {"id":{"name":"sprBackground","path":"sprites/sprBackground/sprBackground.yy",},},
   ],
   "resourceType":"GMProject",
