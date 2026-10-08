@@ -1,10 +1,11 @@
 <h1 align="center">GMDialogue</h1>
 <h3 align="center">A small dialogue system.</h3>
 
+<h2 align="center">WORK IN PROGRESS</h2>
 
 ### Basic setup
 - Create a script in GameMaker
-	- Copy everything from [GMDialogue.gml](https://github.com/maklore/GMDialogue/blob/main/scripts/GMDialogue/GMDialogue.gml)
+	- Copy everything from [GMDialogue.gml] *Removed link since newest addition requires more than just this code*
 	- Paste to script file
 
 - Create an object
