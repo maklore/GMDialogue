@@ -1,11 +1,9 @@
 <h1 align="center">GMDialogue</h1>
 <h3 align="center">A small dialogue system.</h3>
 
-<h2 align="center">WORK IN PROGRESS</h2>
-
 ### Basic setup
 - Create a script in GameMaker
-	- Copy everything from [GMDialogue.gml] *Removed link since newest addition requires more than just this code*
+	- Copy everything from [GMDialogue.gml](https://github.com/maklore/GMDialogue/blob/main/scripts/GMDialogue/GMDialogue.gml)
 	- Paste to script file
 
 - Create an object
@@ -19,6 +17,10 @@
     ```gml
     if keyboard_check_released(vk_space) {
       dialogue.next();	
+    }
+
+    if (SOME TRIGGER) {
+		dialogue.reset();
     }
     ```
 	- Add to Draw event:
