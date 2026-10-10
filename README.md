@@ -16,7 +16,7 @@
 	- Add to Step event:
     ```gml
     if keyboard_check_released(vk_space) {
-      dialogue.next();	
+    	dialogue.next();	
     }
 
     if (SOME TRIGGER) {
