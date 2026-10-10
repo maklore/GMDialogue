@@ -1,15 +1,11 @@
 dlg = new GMDialogue(fntArial, 30, 240);
 dlg2 = new GMDialogue(fntArial, 30);
 
-readd = function() {
+dlg.add("Hello there, I wonder if this wrapping does work. If it works. That's pretty great.");
+dlg.add("This is a small dialogue system.");
 
-	dlg.add("Hello there, I wonder if this wrapping does work. If it works. That's pretty great.");
-	dlg.add("This is a small dialogue system.");
-
-}
-readd2 = function() {
-	dlg2.add(
-	@"Hello there, I wonder if this 
+dlg2.add(
+@"Hello there, I wonder if this 
 wrapping does work. If it works.
 wrapping does work. If it works.
 wrapping does work. If it works.
@@ -19,8 +15,5 @@ wrapping does work. If it works.
 wrapping does work. If it works.
 wrapping does work. If it works.
 That's pretty great.");
-	dlg2.add("This is a small dialogue system.");
-}
+dlg2.add("This is a small dialogue system.");
 
-readd();
-readd2();

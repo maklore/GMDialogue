@@ -1,22 +1,3 @@
-/* FONT ALIGNMENT HORIZONTALLY */
-#macro GMDIALOGUE_HALIGN                      fa_center
-
-/* SPRITE RENDERED BEHIND TEXT, SUGGEST USING NINE-SLICE */
-#macro GMDIALOGUE_BACKGROUND_SPRITE           sprGMDialogueBackground //Change to your sprite asset.
-
-/* DISTANCE FROM TEXT TO EDGE OF DRAWN SPRITE */
-#macro GMDIALOGUE_BACKGROUND_PADDING          10
-
-/* MINIMUM WIDTH OF SPRITE TO DRAW */
-#macro GMDIALOGUE_BACKGROUND_WIDTH_MIN        80
-
-/* MINIMUM HEIGHT OF SPRITE TO DRAW */
-#macro GMDIALOGUE_BACKGROUND_HEIGHT_MIN       32
-
-/* SPEED PER FRAME SHOULD ADJUST TO FIT TEXT*/
-#macro GMDIALOGUE_BACKGROUND_ADJUSTMENT_SPEED 1/60
-
-
 /// Simple dialogue system with typewriter effect.
 /// @param {Asset.GMFont} _font Asset font.
 /// @param {real} _write_speed Speed per gamespeed fps.
@@ -24,23 +5,16 @@
 function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 	
 	//Initialize variables.
-	__queue_list        = [];
 	__asset_font        = _font;
-	__string_current    = undefined;
+	__queue_list        = [];
+	__queue_index       = -1;
+	__queue_reset       = false;
+	__string_current    = "";
 	__string_draw       = "";
 	__string_length     = 0;
 	__string_position   = 0;
 	__string_wrap       = _wrap;
 	__string_x          = 0;
-	__background_list   = [];
-	__background_current = undefined;
-	__background_padding = GMDIALOGUE_BACKGROUND_PADDING;
-	__background_halign  = undefined;
-	__background_x       = undefined;
-	__background_y       = undefined;
-	__background_width   = undefined;
-	__background_height  = undefined;
-	__background_speed   = 0;
 	__write_speed       = _write_speed * (1 / game_get_speed(gamespeed_fps)); //Write speed * framespeed.
 	__write_increment   = 0;
 	__write_complete    = true;
@@ -50,18 +24,16 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 	* @param {string} _string String.
 	*/
 	add = function(_string) {
+		
 		var _string_push = _string;
+		
 		draw_set_font(__asset_font);
-		//If not undefined then wrap string.
-		if __string_wrap > 0 {
-			_string_push = __string_wrapped(_string, __string_wrap);	
-		}
+		
+		//Wrap if greater than 0;
+		if __string_wrap > 0 { _string_push = __string_wrapped(_string, __string_wrap);	}
+		
 		//Add string to end of the array.
 		array_push(__queue_list, _string_push);
-		array_push(__background_list, {
-			width  : string_width(_string_push),
-			height : string_height(_string_push)
-		});
 	}
 	
 	/**
@@ -77,33 +49,41 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 			exit;
 		}
 		
-		//Get the string and backgrounds from the start of the array and remove it from the array.
-		__string_current = array_shift(__queue_list);          //Returns undefined if empty.
-		__background_current = array_shift(__background_list); //Returns undefined if empty.
+		//Increase the queue index
+		__queue_index += __queue_index < array_length(__queue_list);
 		
-		//Exit the method and set background data as undefined if current string is undefined.
-		if is_undefined(__string_current) { 
-			__background_x = undefined;
-			__background_y = undefined;
-			__background_width  = undefined;
-			__background_height = undefined;
-			exit; 
+		//If the index equals the array length, reset and exit.
+		if __queue_index == array_length(__queue_list) { 
+			__queue_index = -1;
+			exit;
 		}
 		
-		//Reset string position, and draw.
+		//Get the string and backgrounds from the start of the array and remove it from the array.
+		__string_current = __queue_list[__queue_index];
+				
+		//Reset variables before drawing next string.
+		__queue_reset = false;
+		__write_complete = false;
 		__string_position = 0;
 		__string_draw = "";
-		
-		//If the string is undefined, don't change string length. Reset background pos
-		if !is_undefined(__string_current) {
-			__string_length = string_length(__string_current)
-		}
-		
-		//Reset variables before drawing next string.
-		__write_complete = false;
-		__background_speed = 0;
-		__background_halign = undefined;
+		__string_length = string_length(__string_current);
 		__string_x = 0;
+		
+	}
+	
+	/**
+	* Reset dialogue.
+	*/
+	reset = function() {
+		
+		//Exit if already reset.
+		if __queue_reset { exit; }
+		
+		//Reset values.
+		__queue_index = -1;
+		__queue_reset = true;
+		__write_complete = true;
+
 	}
 	
 	/**
@@ -113,21 +93,14 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 	*/
 	draw = function(_x, _y) {
 				
-		//Exit the method if current string is undefined.
-		if is_undefined(__string_current) { exit; }
+		//Exit draw if index less than 0.
+		if __queue_index < 0 { exit; }
 		
 		//Draw setting.
 		draw_set_font(__asset_font);
-		draw_set_halign(GMDIALOGUE_HALIGN);
+		draw_set_halign(fa_left);
 		draw_set_valign(fa_top);
-		
-		//Initialize position, width, and height.
-		__background_x      ??= _x;
-		__background_y      ??= _y;
-		__background_width  ??= GMDIALOGUE_HALIGN == fa_center ? 0 : GMDIALOGUE_BACKGROUND_WIDTH_MIN;
-		__background_height ??= GMDIALOGUE_BACKGROUND_HEIGHT_MIN;
-		__background_halign ??= GMDIALOGUE_HALIGN == fa_center ? string_width(__string_current) * 0.5 : __background_current.width * 0.5;
-		
+				
 		//If the string position is less than length increase write increment by set speed.
 		if __string_position < __string_length {
 			__write_increment += __write_speed;
@@ -145,58 +118,8 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 			}
 		}
 		
-
-		
-		//Draw background sprite behind the string.
-		if is_handle(GMDIALOGUE_BACKGROUND_SPRITE) and !is_undefined(__background_current) {
-			
-			var _background_padtwice = __background_padding * 2;
-			
-			if __background_speed < 1 { 
-				__background_speed += GMDIALOGUE_BACKGROUND_ADJUSTMENT_SPEED; 
-			}
-			
-			if __background_current.width > GMDIALOGUE_BACKGROUND_WIDTH_MIN {
-				if GMDIALOGUE_HALIGN == fa_center {
-					__background_x = lerp(__background_x, _x - __background_halign - __background_padding, __background_speed)
-					__string_x = 0;
-				} else {
-					__background_x = _x - __background_halign - __background_padding;
-					__string_x = __background_current.width * 0.5;
-				}
-				__background_width = lerp(__background_width, _background_padtwice + __background_current.width, __background_speed);
-				
-			} else {
-				__background_x = _x - __background_halign - __background_padding;
-				__background_width = lerp(__background_width, _background_padtwice + GMDIALOGUE_BACKGROUND_WIDTH_MIN, __background_speed);
-				__string_x = GMDIALOGUE_BACKGROUND_WIDTH_MIN * 0.5;
-			}
-
-			if __background_current.height > GMDIALOGUE_BACKGROUND_HEIGHT_MIN {
-				if GMDIALOGUE_HALIGN == fa_center {
-					__background_y      = lerp(__background_y, _y - __background_padding, __background_speed);
-					__background_height = lerp(__background_height, _background_padtwice + __background_current.height, __background_speed);
-				} else {
-					__background_y      = _y - __background_padding;
-					__background_height = _background_padtwice + __background_current.height;
-				}
-				
-			} else {
-				__background_y = _y - __background_padding;
-				if GMDIALOGUE_HALIGN == fa_center or __background_height > GMDIALOGUE_BACKGROUND_HEIGHT_MIN {
-					__background_height = lerp(__background_height, _background_padtwice + GMDIALOGUE_BACKGROUND_HEIGHT_MIN, __background_speed);
-				} else {
-					__background_height = _background_padtwice + GMDIALOGUE_BACKGROUND_HEIGHT_MIN;
-				}
-			}
-			
-			draw_sprite_stretched(GMDIALOGUE_BACKGROUND_SPRITE, 0, __background_x, __background_y, __background_width, __background_height);
-						
-		}
-		
 		//Draw the string from string draw at set coordinates.
-		draw_text(_x - __string_x, _y, __string_draw);
-		//draw_circle(_x, _y, 100, true) //debug
+		draw_text(_x, _y, __string_draw);
 	}
 	
 	/// @ignore
