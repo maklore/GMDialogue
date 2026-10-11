@@ -19,7 +19,7 @@
     	dialogue.next();	
     }
 
-    if (SOME TRIGGER LEAVE TRIGGER) {
+    if (SOME LEAVES THE DIALOGUE TRIGGER) {
 		dialogue.reset();
     }
     ```
