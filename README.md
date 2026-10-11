@@ -9,7 +9,7 @@
 - Create an object
 	- Add to Create event:
     ```gml
-    dialogue = new GMDialogue(ASSET_FONT, WRITE_SPEED);
+    dialogue = new GMDialogue(ASSET_FONT, WRITE_SPEED, WRAP_WIDTH);
     dialogue.add("This is a string.");
     ```
   
