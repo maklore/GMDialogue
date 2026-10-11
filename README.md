@@ -15,7 +15,7 @@
   
 	- Add to Step event:
     ```gml
-    if keyboard_check_released(vk_space) {
+    if (SOME ENTER THE DIALOGUE TRIGGER) {
     	dialogue.next();	
     }
 
@@ -25,7 +25,7 @@
     ```
 	- Add to Draw event:
     ```gml
-    dialogue.draw(X_coord, Y_coord);
+    dialogue.draw(X, Y);
     ```
  	- Add object to room
   - Enjoy!
