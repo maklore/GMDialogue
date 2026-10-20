@@ -83,6 +83,8 @@ function GMDialogue(_font, _write_speed, _wrap = 0) constructor {
 		__queue_index = -1;
 		__queue_reset = true;
 		__write_complete = true;
+		__background_width = undefined;
+		__background_height = undefined;
 
 	}
 	
